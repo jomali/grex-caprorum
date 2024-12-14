@@ -1,0 +1,9 @@
+#skill-check,
+#skill-check canvas {
+  /* border: 1px solid magenta; */
+  height: 400px;
+  /* position: fixed; */
+  /* top: calc((100vh/2) - 200px); */
+  width: 100%;
+  /* z-index: 2000; */
+}
