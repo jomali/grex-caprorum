@@ -62,7 +62,7 @@ const DiceResult: React.FC<IDiceResult> = (props) => {
           scale: isLargeMode ? 6 : 8,
           spinForce: 10,
           startingHeight: 10,
-          theme: "smooth",
+          theme: "wooden",
           themeColor: theme.palette.primary.main,
           throwForce: 8,
         }

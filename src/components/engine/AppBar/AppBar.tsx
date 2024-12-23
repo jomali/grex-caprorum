@@ -18,12 +18,14 @@ const ElevationScroll = (props: { children: any }) => {
 
   return React.cloneElement(children, {
     sx: {
+      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.background.default,
       borderBottom: "1px solid " + theme.palette.divider,
       zIndex: theme.zIndex.appBar,
 
       ...(isTriggered && {
-        backgroundColor: alpha(theme.palette.background.default, 0.2),
-        backdropFilter: "blur(8px)",
+        backgroundColor: alpha(theme.palette.background.default, 0.1),
+        backdropFilter: "blur(2px)",
       }),
     },
   });
@@ -37,7 +39,7 @@ const AppBar = () => {
           <Toolbar>
             <Typography
               sx={{ fontWeight: (theme) => theme.typography.fontWeightBold }}>
-              Grex Caprorum
+              Ruinas Recientes
             </Typography>
           </Toolbar>
         </MuiAppBar>

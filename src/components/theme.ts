@@ -30,13 +30,16 @@ declare module "@mui/material/styles" {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#DA0037",
+      main: "#663A21",
     },
     background: {
-      default: "#171717",
-      paper: "#171717",
+      default: "#BAAFA9",
+      paper: "#BAAFA9",
     },
-    mode: "dark",
+    text: {
+      primary: "#3B2018",
+    },
+    mode: "light",
   },
 });
 
@@ -44,25 +47,25 @@ export default createTheme(theme, {
   attribute: {
     intellect: theme.palette.augmentColor({
       color: {
-        main: "#6ba3af",
+        main: "#3f8695",
       },
       name: "intellect",
     }),
     motorics: theme.palette.augmentColor({
       color: {
-        main: "#48E748",
+        main: "#29AC29",
       },
       name: "motorics",
     }),
     physique: theme.palette.augmentColor({
       color: {
-        main: "#ff5439",
+        main: "#b04938",
       },
       name: "physique",
     }),
     psyche: theme.palette.augmentColor({
       color: {
-        main: "#b354ca",
+        main: "#ab46c4",
       },
       name: "psyche",
     }),
