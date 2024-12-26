@@ -1,80 +1,64 @@
-# title: Grex Caprorum
-# author: Textualiza
+# Ruinas Recientes
+# Textualiza
 
-VAR intellect = 0
-VAR motorics = 0
-VAR physique = 0
-VAR psyche = 0
+VAR skill = 0
 
--> Combate
+-> Introduccion
 
-=== Combate ===
+=== Introduccion ===
 
-Hacer acrobacias en gravedad cero suele ser divertido. De verdad.
+Hay ruinas que tardan siglos en formarse, con la lluvia, las heladas y el musgo.
 
-Apostarías un trago a que si te pasearas por el puerto de la estación un día cualquiera verías algún estibador lanzándose de un lado a otro haciendo tirabuzones y dando volteretas. Aquello parece un puto circo a veces.
+Otras se crean en cuestión de minutos.
 
-Pero no es tan divertido cuando has perdido el control y giras desorientado sobre ti mismo.
-
-Los focos del almacén parecen orbitar a tu alrededor a toda velocidad, como decenas de soles saliendo y poniéndose de nuevo en apenas unos fragmentos de segundo. Tu estómago se revuelve, listo para saltar fuera a través del primer orificio que te atrevas a abrir lo suficiente.
-
-Hasta que te estrellas con fuerza contra uno de los laterales de la jaula y consigues aferrarte a algo y recuperar el control.
-
-La multitud apelotonada en el almacén grita. Están eufóricos después de ese último golpe que te ha encajado Lecilia.
-
-* [La busco con la mirada]
+* [Empezar #highlight]
 
 -
-Aún desorientado, necesitas un momento para ubicarla de nuevo. Está sobre tu cabeza a algunos metros de distancia, agarrada a uno de los tirantes que cruzan el espacio del ring.
+@cleanScreen
+Esta mañana hemos sacado de sus casillas al profesor Don Emilio. Cosa que no es fácil y rara vez conseguimos. Incluso Julián, el hijo del director, está siguiendo nuestras tonterías.
 
--> Combate.acciones
+—Y si todos se tiran por la ventana, ¿tú también lo harías? —pregunta enajenado el profesor a Julián por nuestra falta global de disciplina.
 
-= acciones
+—Depende, ¿qué hay abajo? —contesta él para mayor desesperación de Don Emilio.
 
-+ [Me adelanto y ataco primero #physique(50) #Combate.ataque1_exito #Combate.ataque1_fracaso] -> DONE
-+ [Estudio sus movimientos buscando un punto débil #intellect(50) #Combate.estudio1_exito #Combate.estudio2_fracaso] -> DONE
-+ [Me rindo] -> Combate.rendirte
+—¿Nos persigue un monstruo asesino? —pregunta también Ana apuntando a Julián con un cartabón a modo de pistola mientras hace ruido de disparos, Julián hace el teatrillo de ser ametrallado, y todos reímos.
 
-= ataque1_exito
+* [Disparar con la cerbatana a Julián #skill(20) #Introduccion.cerbatana #Introduccion.cerbatana] -> DONE
+* [Disparar con la cerbatana a Ana #skill(50) #Introduccion.cerbatana #Introduccion.cerbatana] -> DONE
+* [Disparar con la cerbatana a Don Emilio #skill(80) #Introduccion.cerbatana #Introduccion.cerbatana] -> DONE
+* [Trabajar con el cuadernillo] -> DONE
 
-Sin pensártelo, te das impulso con las correas y te lanzas a toda velocidad. Lecilia no se espera el movimiento y no tiene tiempo a reaccionar. Trata de protegerse en el último momento pero consigues golpear con fuerza en su estómago.
+= cerbatana
 
-Esta vez es ella la que sale flotando disparada hasta golpear contra uno de los extremos del ring.
+Chupo el trocito de papel y lo amaso. Lo pongo dentro de la cerbatana, apunto y soplo con fuerza. La bolita sale disparada y…
 
--> Combate.acciones
+Don Emilio hubiera estallado de forma impredecible de no ser porque justo suena la sirena.
 
-= ataque1_fracaso
+* [Continuar #highlight] -> Alarma
 
-Sin pensártelo, te das impulso con las correas y te lanzas a toda velocidad. Pero Lecilia ve tu movimiento y consigue echarse a un lado y esquivarte con facilidad.
+=== Alarma ===
 
--> Combate.acciones
+@cleanScreen
+No es la hora del recreo, ni tan siquiera es la sirena del colegio. Es la sirena grave y sostenida para ir a los refugios antiaéreos que apareció en nuestras vidas hace unas semanas. Una vez más nada pasó, pero las clases no se reanudaron ese día.
 
-= estudio1_exito
+Desoyendo a nuestros padres de no alejarnos mucho, decidimos no desaprovechar este día de tanto calor para ir a nuestra caseta junto al río. Lo pasamos muy bien, juntos como una piña, como siempre. Todos, también a la vez, nos paramos en seco mirando hacia el norte. Incluso desde allí, oímos de nuevo la sirena de la ciudad.
 
-Lecilia se mueve entre la telaraña de correas, impulsándose con la misma facilidad con manos que con pies. La tía es sorprendentemente ágil.
+Corremos hacia la ciudad. Con suerte llegaremos antes de que nos caiga una bronca monumental. Quizás se quedase en bronca estándar. Corremos lo más que podemos pero un sonido cada vez se hace más intenso en el cielo. Una flota de aviones nos adelantan.
 
-Pero es una presumida. Cada vez que se acerca a una de las paredes de la jaula tiene la manía de dar una voltereta hacia atrás en posición de cruz extendida. Una filigrana que encanta al público.
+* [La ciudad sigue estando hacia el norte #highlight]
 
--> Combate.acciones
+-
+@cleanScreen
+Nunca habíamos visto un avión en realidad. Nos crea una mezcla de asombro y miedo.
 
-= estudio2_fracaso
+Seguimos corriendo hacia la ciudad con un mal presentimiento que no tarda en confirmarse. Vemos diminutas cosas caer de los aviones provocando ruidosas explosiones. Aquella lluvia, sin dar tregua, convierte la ciudad en una masa de fuego y humo.
 
-Lecilia se mueve entre la telaraña de correas, impulsándose con la misma facilidad con manos que con pies. La tía es sorprendentemente ágil.
+* [La ciudad sigue estando hacia el norte #highlight]
 
-Desde luego es mucho más ágil que tú. Incluso se permite hacer filigranas acrobáticas delante del público. No encuentras nada que te pueda una ventaja.
+-
+@cleanScreen
+Seguimos corriendo. Esta vez oímos otro ruido, por tierra. Como si un ejército motorizado estuviera llegando.
 
--> Combate.acciones
-
-= rendirte
-
-Levantas las manos y pones fin al combate.
-
-Esa cabrona es demasiado fuerte.
-
-La gente comienza a marcharse poco a poco, entre gestos de alegría o decepción en función de si habían apostado por tí o por Lecilia. No se te escapa que incluso entre aquellos que han ganado dinero hoy, son muchos los que abandonan el almacén cabizbajos por no haber podido ver como te partían aún más la cara.
-
-Te encojes de hombros. Seguro que mañana tienen más suerte.
-
-FIN
+Nos escondemos. Nos adelantan tanques, camiones y jeeps.
 
 -> END

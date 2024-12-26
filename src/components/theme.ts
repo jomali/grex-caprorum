@@ -30,14 +30,14 @@ declare module "@mui/material/styles" {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#663A21",
+      main: "#683D2F",
+    },
+    secondary: {
+      main: "#3f8695",
     },
     background: {
-      default: "#BAAFA9",
-      paper: "#BAAFA9",
-    },
-    text: {
-      primary: "#3B2018",
+      default: "#EEEEEE",
+      paper: "#FFFFFF",
     },
     mode: "light",
   },
@@ -45,11 +45,11 @@ const theme = createTheme({
 
 export default createTheme(theme, {
   attribute: {
-    intellect: theme.palette.augmentColor({
+    skill: theme.palette.augmentColor({
       color: {
         main: "#3f8695",
       },
-      name: "intellect",
+      name: "skill",
     }),
     motorics: theme.palette.augmentColor({
       color: {

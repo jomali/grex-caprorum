@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 
 export interface IOption {
-  attribute?: "default" | "intellect" | "motorics" | "physique" | "psyche";
+  attribute?: string;
   children: string;
   difficulty?: number;
   disabled?: boolean;
@@ -15,17 +15,12 @@ export interface IOption {
 const Button = styled(ButtonBase, {
   shouldForwardProp: (prop) => prop !== "disabled",
 })(({ disabled, theme }) => ({
-  backgroundColor: theme.palette.primary.main,
   borderRadius: `${theme.shape.borderRadius}px`,
   color: theme.palette.primary.contrastText,
   display: "flex",
   flexGrow: 1,
   padding: theme.spacing(1.2, 3.2),
-  // "&:hover": {
-  //   backgroundColor: theme.palette.primary.dark,
-  // },
   ...(disabled && {
-    backgroundColor: theme.palette.action.disabledBackground,
     color: theme.palette.action.disabled,
   }),
 }));
@@ -34,7 +29,7 @@ const AttributeSpan = styled("span", {
   shouldForwardProp: (prop) => prop !== "attribute",
 })(({ attribute, theme }: { attribute: string; theme?: any }) => ({
   color: theme.attribute[attribute].main,
-  marginRight: theme.spacing(1.2),
+  marginLeft: theme.spacing(1.2),
 }));
 
 const Option: React.FC<IOption> = (props) => {
@@ -67,44 +62,17 @@ const Option: React.FC<IOption> = (props) => {
 
   const buttonContents = React.useMemo(() => {
     switch (attribute) {
-      case "intellect":
-        return (
-          <>
-            <AttributeSpan attribute={attribute}>
-              [Intelecto - {difficultyString}]
-            </AttributeSpan>
-            {children}
-          </>
-        );
-      case "motorics":
-        return (
-          <>
-            <AttributeSpan attribute={attribute}>
-              [Motricidad - {difficultyString}]
-            </AttributeSpan>
-            {children}
-          </>
-        );
-      case "physique":
-        return (
-          <>
-            <AttributeSpan attribute={attribute}>
-              [Físico - {difficultyString}]
-            </AttributeSpan>
-            {children}
-          </>
-        );
-      case "psyche":
-        return (
-          <>
-            <AttributeSpan attribute={attribute}>
-              [Psique - {difficultyString}]
-            </AttributeSpan>
-            {children}
-          </>
-        );
-      default:
+      case "default":
         return children;
+      default:
+        return (
+          <>
+            {children}
+            <AttributeSpan attribute={attribute}>
+              [{difficultyString}]
+            </AttributeSpan>
+          </>
+        );
     }
   }, [attribute, children, difficultyString]);
 
@@ -113,11 +81,12 @@ const Option: React.FC<IOption> = (props) => {
       disabled={disabled}
       focusRipple
       sx={{
-        backgroundColor: "transparent",
+        background: "transparent",
         border: "1px solid",
         color: (theme) => theme.palette.primary.main,
         ...(variant === "highlight" && {
-          backgroundColor: (theme) => theme.palette.primary.main,
+          background: (theme) =>
+            `linear-gradient(45deg, ${theme.palette.primary.main} 60%, ${theme.palette.secondary.main} 90%)`,
           border: 0,
           color: (theme) => theme.palette.primary.contrastText,
         }),
@@ -126,7 +95,6 @@ const Option: React.FC<IOption> = (props) => {
       <Typography
         sx={{
           display: "initial",
-          // flexDirection: "row",
         }}>
         {buttonContents}
       </Typography>

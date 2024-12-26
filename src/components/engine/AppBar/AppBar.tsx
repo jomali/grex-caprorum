@@ -31,7 +31,9 @@ const ElevationScroll = (props: { children: any }) => {
   });
 };
 
-const AppBar = () => {
+const AppBar = (props: { title: string }) => {
+  const { title } = props;
+
   return (
     <>
       <ElevationScroll>
@@ -39,7 +41,7 @@ const AppBar = () => {
           <Toolbar>
             <Typography
               sx={{ fontWeight: (theme) => theme.typography.fontWeightBold }}>
-              Ruinas Recientes
+              {title}
             </Typography>
           </Toolbar>
         </MuiAppBar>

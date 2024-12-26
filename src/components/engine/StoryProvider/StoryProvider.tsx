@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import MuiContainer from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
-import { alpha, styled, useTheme } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { Story } from "inkjs";
@@ -10,7 +10,6 @@ import AppBar from "../AppBar";
 import DiceResult from "../DiceResult";
 import Option, { IOption } from "../Option";
 import SideBar from "../SideBar";
-import Skill from "../Skill";
 
 type Enumerate<
   N extends number,
@@ -30,25 +29,26 @@ const Main = styled("main")(() => ({
   height: "100%",
 }));
 
-const Container = styled(MuiContainer)(({ theme }) => ({
+const Container = styled(MuiContainer)(() => ({
   display: "flex",
   flexDirection: "row",
   flexGrow: 1,
   padding: "0 !important",
-  [theme.breakpoints.up("md")]: {
-    borderLeft: "1px solid " + theme.palette.divider,
-    borderRight: "1px solid " + theme.palette.divider,
-  },
+  // [theme.breakpoints.up("md")]: {
+  //   borderLeft: "1px solid " + theme.palette.divider,
+  //   borderRight: "1px solid " + theme.palette.divider,
+  // },
 }));
 
 export interface IStoryProvider {
   story: string;
+  enableSideBar?: boolean;
 }
 
 export const StoryContext = React.createContext({});
 
 const StoryProvider: React.FC<IStoryProvider> = (props) => {
-  const { story: storyFile } = props;
+  const { enableSideBar, story: storyFile } = props;
   const theme = useTheme();
 
   // FIXME - define correct type
@@ -60,34 +60,34 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
   // const [diceResult, setDiceResult] = React.useState<number | undefined>();
   const [story, setStory] = React.useState<InstanceType<typeof Story>>();
   const [skillCheck, setSkillCheck] = React.useState<{
-    attribute: Skill;
+    attribute: string;
     difficulty: IntRange<0, 100>;
     failureKnot: string;
     id: number;
     successKnot: string;
   }>();
 
-  const getNextContent = () => {
+  const getNextContent = React.useCallback((storyObject: any) => {
     const result: { data: (string | null)[]; newScreen: boolean } = {
       data: [],
       newScreen: false,
     };
-    // while (story?.canContinue) {
-    const nextParagraph = story.Continue();
-    if (nextParagraph === "@cleanScreen\n") {
-      result.newScreen = true;
-      // continue;
-    } else {
-      result.data.push(nextParagraph);
+    while (storyObject?.canContinue) {
+      const nextParagraph = storyObject.Continue();
+      if (nextParagraph === "@cleanScreen\n") {
+        result.newScreen = true;
+        continue;
+      } else {
+        result.data.push(nextParagraph);
+      }
     }
-    // }
     return result;
-  };
+  }, []);
 
   const handleContinue = () => {
     if (story?.canContinue) {
       setContents((currentContents) => {
-        const newContent = getNextContent();
+        const newContent = getNextContent(story);
         const previousContents = newContent.newScreen
           ? []
           : [...currentContents];
@@ -110,6 +110,13 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
             story?.currentChoices.map((element: any, index: number) => {
               const attribute = element.tags[0]?.match(/(.*)\((\d*)\)/);
 
+              let variant = "default";
+              if (attribute) {
+                variant = "election";
+              } else if (element.tags[0] === "highlight") {
+                variant = "highlight";
+              }
+
               return (
                 <Option
                   key={`option-${index}`}
@@ -129,7 +136,7 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
                       handleContinue();
                     }
                   }}
-                  variant={element.variant as "election" | undefined}>
+                  variant={variant as "election"}>
                   {element.text}
                 </Option>
               );
@@ -145,12 +152,13 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
       const storyData = await fetch(storyFile);
       const result = await storyData.text();
       const inkStory = new Story(result);
-      setContents([inkStory.Continue()]);
+      const startContent = getNextContent(inkStory);
+      setContents([...startContent.data]);
       setStory(inkStory);
     };
 
     fetchStory();
-  }, [storyFile]);
+  }, [storyFile, getNextContent]);
 
   React.useEffect(() => {
     if (scrollableRef.current) {
@@ -215,10 +223,6 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
                   transition={{ duration: 1 }}>
                   <Typography
                     sx={{
-                      color: (theme) =>
-                        index === contents.length - 1
-                          ? theme.palette.text.primary
-                          : alpha(theme.palette.text.primary, 0.2),
                       marginBottom: 3,
                       transition: (theme) =>
                         `color ${theme.transitions.duration.complex}`,
@@ -237,9 +241,9 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
   return (
     <StoryContext.Provider value={story}>
       <Main>
-        <AppBar />
+        <AppBar title={story?.globalTags[0]} />
 
-        <Container maxWidth="md">
+        <Container maxWidth="sm">
           <Box
             sx={{
               flexGrow: 1,
@@ -252,7 +256,9 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
             }}>
             {renderContents()}
           </Box>
-          <SideBar onChange={setView} value={currentView} />
+          {!enableSideBar ? null : (
+            <SideBar onChange={setView} value={currentView} />
+          )}
         </Container>
       </Main>
 
@@ -266,7 +272,7 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
           story.ChoosePathString(
             isSuccess ? temp?.successKnot : temp?.failureKnot
           );
-          const newContent = getNextContent();
+          const newContent = getNextContent(story);
           setContents((curr) => [...curr, ...newContent.data]);
         }}
         open={Boolean(skillCheck?.difficulty)}
