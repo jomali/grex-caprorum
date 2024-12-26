@@ -45,7 +45,9 @@ export interface IStoryProvider {
   enableSideBar?: boolean;
 }
 
-export const StoryContext = React.createContext({});
+export const StoryContext = React.createContext<
+  InstanceType<typeof Story> | object
+>({});
 
 const StoryProvider: React.FC<IStoryProvider> = (props) => {
   const { enableSideBar, story: storyFile } = props;
@@ -239,9 +241,9 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
   };
 
   return (
-    <StoryContext.Provider value={story}>
+    <StoryContext.Provider value={story ?? {}}>
       <Main>
-        <AppBar title={story?.globalTags[0]} />
+        <AppBar title={story?.globalTags?.[0] ?? ""} />
 
         <Container maxWidth="sm">
           <Box
@@ -267,9 +269,9 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
         onAccept={(isSuccess) => {
           const temp = skillCheck;
           setSkillCheck(undefined);
-          story.ChooseChoiceIndex(temp?.id);
+          story?.ChooseChoiceIndex(temp?.id);
 
-          story.ChoosePathString(
+          story?.ChoosePathString(
             isSuccess ? temp?.successKnot : temp?.failureKnot
           );
           const newContent = getNextContent(story);

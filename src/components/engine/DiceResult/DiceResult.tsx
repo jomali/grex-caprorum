@@ -52,21 +52,19 @@ const DiceResult: React.FC<IDiceResult> = (props) => {
     if (diceBoxRef.current && !diceBox) {
       // Note the dice-box assets in the public folder.
       // Those files are all necessary for the web workers to function properly
-      const dice = new Dice(
-        "#skill-check", // target DOM element to inject the canvas for rendering
-        {
-          assetPath: "/assets/dice-box/",
-          enableShadows: true,
-          id: "dice-canvas", // canvas element id
-          lightIntensity: 0.9,
-          scale: isLargeMode ? 6 : 8,
-          spinForce: 10,
-          startingHeight: 10,
-          theme: "wooden",
-          themeColor: theme.palette.primary.main,
-          throwForce: 8,
-        }
-      );
+      const dice = new Dice({
+        container: "#skill-check", // target DOM element to inject the canvas for rendering
+        assetPath: "/assets/",
+        enableShadows: true,
+        id: "dice-canvas", // canvas element id
+        lightIntensity: 0.9,
+        scale: isLargeMode ? 6 : 8,
+        spinForce: 10,
+        startingHeight: 10,
+        theme: "wooden",
+        themeColor: theme.palette.primary.main,
+        throwForce: 8,
+      });
       dice.init();
       setDiceBox(dice);
     }
