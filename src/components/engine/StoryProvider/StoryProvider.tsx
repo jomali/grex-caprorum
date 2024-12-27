@@ -10,6 +10,7 @@ import AppBar from "../AppBar";
 import DiceResult from "../DiceResult";
 import Option, { IOption } from "../Option";
 import SideBar from "../SideBar";
+import useInk from "./useInk";
 
 type Enumerate<
   N extends number,
@@ -57,10 +58,9 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const scrollableRef: any = React.useRef();
 
-  const [contents, setContents] = React.useState<(string | null)[]>([]);
+  const ink = useInk(storyFile);
+
   const [currentView, setView] = React.useState(0);
-  // const [diceResult, setDiceResult] = React.useState<number | undefined>();
-  const [story, setStory] = React.useState<InstanceType<typeof Story>>();
   const [skillCheck, setSkillCheck] = React.useState<{
     attribute: string;
     difficulty: IntRange<0, 100>;
@@ -69,47 +69,18 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
     successKnot: string;
   }>();
 
-  const getNextContent = React.useCallback((storyObject: any) => {
-    const result: { data: (string | null)[]; newScreen: boolean } = {
-      data: [],
-      newScreen: false,
-    };
-    while (storyObject?.canContinue) {
-      const nextParagraph = storyObject.Continue();
-      if (nextParagraph === "@cleanScreen\n") {
-        result.newScreen = true;
-        continue;
-      } else {
-        result.data.push(nextParagraph);
-      }
-    }
-    return result;
-  }, []);
-
-  const handleContinue = () => {
-    if (story?.canContinue) {
-      setContents((currentContents) => {
-        const newContent = getNextContent(story);
-        const previousContents = newContent.newScreen
-          ? []
-          : [...currentContents];
-        return [...previousContents, ...newContent.data];
-      });
-    }
-  };
-
   const printOptions = () => {
     return (
       <Stack direction="column" spacing={1} sx={{ marginTop: 8 }}>
-        {story?.canContinue ? (
-          <Option onClick={() => handleContinue()} variant="default">
+        {ink.story?.canContinue ? (
+          <Option onClick={() => ink.continue()} variant="default">
             ...
           </Option>
         ) : (
           <>
             {// FIXME - define correct type
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            story?.currentChoices.map((element: any, index: number) => {
+            ink.story?.currentChoices.map((element: any, index: number) => {
               const attribute = element.tags[0]?.match(/(.*)\((\d*)\)/);
 
               let variant = "default";
@@ -134,8 +105,8 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
                         successKnot: element.tags[1],
                       }));
                     } else {
-                      story.ChooseChoiceIndex(index);
-                      handleContinue();
+                      ink.story?.ChooseChoiceIndex(index);
+                      ink.continue();
                     }
                   }}
                   variant={variant as "election"}>
@@ -150,19 +121,6 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
   };
 
   React.useEffect(() => {
-    const fetchStory = async () => {
-      const storyData = await fetch(storyFile);
-      const result = await storyData.text();
-      const inkStory = new Story(result);
-      const startContent = getNextContent(inkStory);
-      setContents([...startContent.data]);
-      setStory(inkStory);
-    };
-
-    fetchStory();
-  }, [storyFile, getNextContent]);
-
-  React.useEffect(() => {
     if (scrollableRef.current) {
       scrollableRef.current.scrollIntoView({
         behavior: "smooth",
@@ -170,7 +128,7 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
         inline: "nearest",
       });
     }
-  }, [contents]);
+  }, [ink.contents]);
 
   const renderContents = () => {
     switch (currentView) {
@@ -216,9 +174,9 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
                 flexGrow: 1,
                 flexDirection: "column",
               }}>
-              {contents.map((element, index) => (
+              {ink.contents.map((element, index) => (
                 <motion.div
-                  key={`content-${index}`}
+                  key={`content-${index}-${element.key}`}
                   ref={scrollableRef}
                   animate={{ opacity: 1, scale: 1 }}
                   initial={{ opacity: 0, scale: 1 }}
@@ -229,7 +187,7 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
                       transition: (theme) =>
                         `color ${theme.transitions.duration.complex}`,
                     }}>
-                    {element}
+                    {element.data}
                   </Typography>
                 </motion.div>
               ))}
@@ -241,9 +199,9 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
   };
 
   return (
-    <StoryContext.Provider value={story ?? {}}>
+    <StoryContext.Provider value={ink.story ?? {}}>
       <Main>
-        <AppBar title={story?.globalTags?.[0] ?? ""} />
+        <AppBar title={ink.globalTags[0] ?? ""} />
 
         <Container maxWidth="sm">
           <Box
@@ -269,13 +227,13 @@ const StoryProvider: React.FC<IStoryProvider> = (props) => {
         onAccept={(isSuccess) => {
           const temp = skillCheck;
           setSkillCheck(undefined);
-          story?.ChooseChoiceIndex(temp?.id);
-
-          story?.ChoosePathString(
-            isSuccess ? temp?.successKnot : temp?.failureKnot
+          ink.story?.ChooseChoiceIndex(temp?.id as number);
+          ink.story?.ChoosePathString(
+            isSuccess
+              ? (temp?.successKnot as string)
+              : (temp?.failureKnot as string)
           );
-          const newContent = getNextContent(story);
-          setContents((curr) => [...curr, ...newContent.data]);
+          ink.continue();
         }}
         open={Boolean(skillCheck?.difficulty)}
       />
